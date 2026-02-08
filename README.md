@@ -76,13 +76,18 @@ stripe listen --forward-to http://localhost:3000/api/auth/stripe/webhook
 
 Your app will be available at http://localhost:3000
 
-## 📂 Project Structure
+## Project Structure
 
 - `/app/routes/_auth+/` - Login/logout with email OTP
 - `/app/routes/onboarding+/` - Organization creation and listing
 - `/app/routes/org+/$id/` - Organization dashboard with subscription management
 - `/app/services/auth.server.ts` - Better Auth configuration with Stripe plugin
 - `/app/db/` - Drizzle ORM setup and migrations
+
+## YouTube
+
+- [Channel](https://www.youtube.com/@Lauvadev)
+- [Video](https://youtu.be/rKA0BjCNysk)
 
 ---
 
