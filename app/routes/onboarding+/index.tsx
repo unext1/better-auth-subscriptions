@@ -2,7 +2,6 @@ import { Form, href, Link, redirect } from 'react-router';
 import { Button, buttonVariants } from '~/components/ui/button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
-import { db } from '~/db';
 import { auth } from '~/services/auth.server';
 import type { Route } from './+types';
 
@@ -12,13 +11,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   });
 
   if (!session) return redirect('/login');
-  const orgs = await db.query.member.findMany({
-    with: {
-      organization: true,
-    },
-    where: (member, { eq }) => eq(member.userId, session.user.id),
+
+  const orgs = await auth.api.listOrganizations({
+    headers: request.headers,
   });
-  return { orgs: orgs.map((m) => m.organization) };
+
+  return { orgs };
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -74,7 +72,7 @@ const OnboardingPage = ({ loaderData }: Route.ComponentProps) => {
               Create Organization
             </Button>
           </Form>
-          <Form>
+          <Form method="post" action={href('/logout')}>
             <Button type="submit" className="w-lg mt-4" variant="outline">
               Logout
             </Button>
