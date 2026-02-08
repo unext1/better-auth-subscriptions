@@ -1,87 +1,89 @@
-# Welcome to React Router!
+# Organization Based Stripe Subscriptions with Better Auth & React Router v7
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A minimal, functional demo app built for my YouTube tutorial showing how to implement organization level Stripe subscriptions using Better Auth and React Router v7.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## What This Is
 
-## Features
+This project demonstrates:
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- **Better Auth** with the organization plugin
+- **Stripe subscriptions attached to organizations** (not individual users)
+- **Email OTP authentication** (passwordless login)
+- Organization creation and subscription upgrades and cancellations
+- React Router v7 server-side rendering and data loading
+- Minimal UI built with Tailwind CSS and shadcn/ui (focused on functionality, not polish)
 
-## Getting Started
+## Key Features
+
+- **Passwordless auth**: Users log in via email OTP codes
+- **Organization-first**: Create and manage organizations
+- **Org subscriptions**: Subscribe organizations to a "pro" plan via Stripe
+- **Stripe webhooks**: Handle subscription events server-side
+- **SQLite + Drizzle**: Local database with type-safe queries
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm
+- Stripe account with API keys
+- Stripe CLI (for webhook testing locally)
 
 ### Installation
 
-Install the dependencies:
+1. Clone and install:
 
 ```bash
-npm install
+git clone git@github.com:unext1/better-auth-subscriptions.git
+cd better-auth-subscription
+pnpm install
 ```
 
-### Development
+2. Set up environment variables:
 
-Start the development server with HMR:
+Create a `.env` file based on `.env.example`:
 
 ```bash
-npm run dev
+BASE_URL=http://localhost:3000
+
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
-Your application will be available at `http://localhost:5173`.
+**Getting your Stripe keys:**
 
-## Building for Production
+- Get `STRIPE_SECRET_KEY` from your [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys)
+- Get `STRIPE_WEBHOOK_SECRET` by running: `stripe listen --forward-to http://localhost:3000/api/auth/stripe/webhook`
 
-Create a production build:
+3. Setup database:
 
 ```bash
-npm run build
+pnpm migrate:apply
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
+4. Start the dev server:
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+pnpm dev
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+5. In another terminal, forward Stripe webhooks:
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+```bash
+stripe listen --forward-to http://localhost:3000/api/auth/stripe/webhook
 ```
 
-## Styling
+Your app will be available at http://localhost:3000
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+## 📂 Project Structure
+
+- `/app/routes/_auth+/` - Login/logout with email OTP
+- `/app/routes/onboarding+/` - Organization creation and listing
+- `/app/routes/org+/$id/` - Organization dashboard with subscription management
+- `/app/services/auth.server.ts` - Better Auth configuration with Stripe plugin
+- `/app/db/` - Drizzle ORM setup and migrations
 
 ---
 
-Built with ❤️ using React Router.
+Built with React Router v7, Better Auth, and Stripe.
